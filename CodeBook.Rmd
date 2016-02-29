@@ -17,7 +17,14 @@ The data is stored in two diffent forms, namely "Test" and "Train". These files 
 
 This data is compiled in such a way as the activity of the user can be tracked by monitoring the acceleration and precession of the smartphone.
 
-Variables created by "run_analysis.R" are as follows:
+###Variables contained in the dataset:
+* "train/subject_train.txt" - Ranges from 1 to 30 indicating the unique ID of each participant.
+* "total_acc_x_train.txt" - Indicates the "g" force felt by the accelerometer. 
+* "body_acc_x_train.txt" - This is a measure of the net acceleration felt by the smartphone. It is the difference between the acceleration felt and the acceleration of gravity.
+* "body_gyro_x_train.txt" - This is a measure of the angular velocity of the smartphone measured in Radians per second.
+* Each of these described variables has a measure in 3Dimensions, so a file exists for the X, the Y and the Z direction for each of the above.
+
+###Variables created by "run_analysis.R" are as follows:
 * trainData, containing "X_train.txt" data
 * trainLabel, containing "y_train.txt" data
 * trainSubject, containing "subject_train.txt" data

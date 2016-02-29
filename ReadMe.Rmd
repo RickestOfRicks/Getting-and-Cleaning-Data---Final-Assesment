@@ -1,0 +1,117 @@
+---
+title: "Getting and Cleaning Data Final Assesment"
+output: html_document
+---
+***
+###Detailed instruction on how to use "run_analysis.R"
+* Download and unzip the data from:
+   https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+   
+* The data should be saved to a directory named "Dataset".
+
+* The script "run_analysis.R" should be in the parent directory.
+
+* Set the working directory of "RGui" or "RStudio" to parent directory of "run_analysis.R".
+
+* Run the script with the command:  source("run_analysis.R") in R.
+
+####Reading of raw data:
+```{r}
+#Collect raw data
+trainData <- read.table(".\\Dataset\\train\\X_train.txt")
+trainLabel <- read.table(".\\Dataset\\train\\y_train.txt")
+trainSubject <- read.table(".\\Dataset\\train\\subject_train.txt")
+testData <- read.table(".\\Dataset\\test\\X_test.txt")
+testLabel <- read.table(".\\Dataset\\test\\y_test.txt") 
+testSubject <- read.table(".\\Dataset\\test\\subject_test.txt")
+```
+####Dimensions of raw data:
+```{r}
+dim(trainData)
+dim(trainLabel)
+dim(trainSubject)
+dim(testData)
+dim(testLabel)
+dim(testSubject)
+```
+
+####To merge the data sets, we use the rbind() function
+```{r}
+mergeData <- rbind(trainData, testData)
+mergeLabel <- rbind(trainLabel, testLabel)
+mergeSubject <- rbind(trainSubject, testSubject)
+```
+
+####Dimensions of the merged data sets:
+```{r}
+dim(mergeData)
+dim(mergeLabel)
+dim(mergeSubject)
+```
+####To subset the correct data, we must first obrain information from the "features.txt" file. This information is the used to created a subset of the data based on the correct features.
+```{r}
+features <- read.table(".\\Dataset\\features.txt")
+index <- grep("mean\\(\\)|std\\(\\)", features[, 2])
+mergeData <- mergeData[, index ]
+```
+
+####We then recreate headings for the data based on Tidy Data principles, removing obsolete, and capatilizing, characters.
+```{r}
+names(mergeData) <- gsub("\\(\\)", "", features[index, 2])
+names(mergeData) <- gsub("mean", "Mean", names(mergeData))
+names(mergeData) <- gsub("std", "Std", names(mergeData))
+names(mergeData) <- gsub("-", "", names(mergeData)) 
+activity <- read.table(".\\Dataset\\activity_labels.txt")
+activity[, 2] <- tolower(gsub("_", "", activity[, 2]))
+substr(activity[2, 2], 8, 8) <- toupper(substr(activity[2, 2], 8, 8))
+substr(activity[3, 2], 8, 8) <- toupper(substr(activity[3, 2], 8, 8))
+activityLabel <- activity[mergeLabel[, 1], 2]
+mergeLabel[, 1] <- activityLabel
+names(mergeLabel) <- "activity"
+names(mergeSubject) <- "subject"
+
+tidyData <- cbind(mergeSubject, mergeLabel, mergeData)
+```
+####The dimensions of the tidy data:
+```{r}
+dim(tidyData)
+```
+####The new tidy data set is now created and exported.
+```{r}
+write.table(tidyData , "tidy_data.txt")
+```
+
+####The tidy data set is now used as an input to calculate the mean of the tidy data.
+```{r}
+sLen <- length(table(mergeSubject))
+aLen <- dim(activity)[1]
+cLen <- dim(tidyData )[2]
+means <- matrix(NA, nrow=sLen*aLen, ncol=cLen) 
+means <- as.data.frame(means)
+colnames(means) <- colnames(tidyData)
+index <- 1
+for(i in 1:sLen) {
+    for(j in 1:aLen) {
+        means[index, 1] <- sort(unique(mergeSubject)[, 1])[i]
+        means[index, 2] <- activity[j, 2]
+        t1 <- i == tidyData$subject
+        t2 <- activity[j, 2] == tidyData$activity
+        means[index, 3:cLen] <- colMeans(tidyData[t1&t2, 3:cLen])
+        index <- index + 1
+    }
+}
+```
+####The dimensions of the means of tidy data:
+```{r}
+dim(means)
+```
+####The tidy data with means is now saved.
+```{r}
+write.table(means, "tidy_data_with_means.txt")
+```
+
+
+* After the script has completed, 2 additional files will have been written to the "data" folder, namely:
+"tidy_data.txt"" and "tidy_data_with_means.txt".
+
+The created files will contain all the data required for this assignment in a "Tidy Data" format.

@@ -1,0 +1,42 @@
+---
+title: "Getting and Cleaning Data CodeBook"
+output: html_document
+---
+
+
+###Data Source:
+http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+
+###Download Data:
+https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+
+##Description of data and variables:
+The downloaded data contains several folders with information gathered from smart phones.
+
+The data is stored in two diffent forms, namely "Test" and "Train". These files are labeled "subject_train.txt" ,"X_train.txt", "Y_train.txt","subject_test.txt" ,"X_test.txt", "Y_test.txt". Each of the test and train folders also contain Inertial Signals about the body acceleration, body gyroscopic precession and total acceleration of the smart phone.
+
+This data is compiled in such a way as the activity of the user can be tracked by monitoring the acceleration and precession of the smartphone.
+
+Variables created by "run_analysis.R" are as follows:
+* trainData, containing "X_train.txt" data
+* trainLabel, containing "y_train.txt" data
+* trainSubject, containing "subject_train.txt" data
+* testData, containing "X_test.txt" data
+* testLabel, containing "y_test.txt" data
+* testSubject, containing "subject_test.txt" data
+
+* mergeData, containing the row bound form of trainData and testData data
+* mergeLabel, containing the row bound form of trainLabel and testLabel data
+* mergeSubject, containing the row bound form of trainSubject and testSubject data
+
+* features, containing "features.txt" data
+* index, containing the desired indexes for the tidy data
+
+* names, containing the tidy forms of the naming fields
+
+* activity, containing "activity.txt" data
+
+* tidyData, containing the final form of the data subset
+* means, containing the final form of the tidy data means
+
+###The "run_analysis.R" script will generate 2 files. One containing the tidy data set and one containing the means of the tidy data data set.
